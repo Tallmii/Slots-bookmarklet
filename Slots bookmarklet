@@ -1,1 +1,153 @@
-javascript:(function(){let symbols=["🍒","🍋","🍊","🍉","⭐","🔔","💎","7️⃣","🌟"];function weightedSpin(){let rand=Math.random()*100;if(rand<2)return"7️⃣";if(rand<5)return"🌟";return symbols[Math.floor(Math.random()*(symbols.length-1))];}function createSlotMachine(){let existingMachine=document.getElementById("slotMachine");if(existingMachine)existingMachine.remove();let machine=document.createElement("div");machine.id="slotMachine";machine.style.position="fixed";machine.style.top="50%";machine.style.left="50%";machine.style.transform="translate(-50%,-50%)";machine.style.background="#222";machine.style.color="white";machine.style.fontSize="40px";machine.style.padding="30px";machine.style.borderRadius="15px";machine.style.textAlign="center";machine.style.zIndex="10000";machine.style.fontFamily="Arial,sans-serif";machine.style.boxShadow="0px 10px 25px rgba(0,0,0,0.7)";machine.style.border="8px solid gold";machine.style.width="350px";let title=document.createElement("div");title.textContent="🎰 SLOT MACHINE 🎰";title.style.fontSize="25px";title.style.color="gold";title.style.marginBottom="10px";let reels=document.createElement("div");reels.style.display="flex";reels.style.justifyContent="center";reels.style.gap="15px";reels.style.marginBottom="20px";let slot1=document.createElement("span");let slot2=document.createElement("span");let slot3=document.createElement("span");[slot1,slot2,slot3].forEach(slot=>{slot.style.background="black";slot.style.padding="20px 25px";slot.style.borderRadius="8px";slot.style.border="4px solid gold";slot.style.fontSize="50px";slot.style.transition="0.3s ease-in-out";slot.textContent="❓";reels.appendChild(slot);});let message=document.createElement("div");message.style.margin="15px 0";message.textContent="Pull the Lever...";let lever=document.createElement("div");lever.textContent="🎯 PULL LEVER 🎯";lever.style.background="red";lever.style.color="white";lever.style.padding="10px";lever.style.fontSize="20px";lever.style.borderRadius="10px";lever.style.cursor="pointer";lever.style.marginBottom="10px";lever.onclick=spinSlots;machine.appendChild(title);machine.appendChild(reels);machine.appendChild(message);machine.appendChild(lever);document.body.appendChild(machine);function spinSlots(){message.textContent="Spinning...";lever.style.display="none";let spins=10;let interval=setInterval(()=>{slot1.textContent=weightedSpin();slot2.textContent=weightedSpin();slot3.textContent=weightedSpin();spins--;if(spins<=0){clearInterval(interval);setTimeout(()=>{slot1.textContent=weightedSpin();slot1.style.transform="scale(1.2)";setTimeout(()=>slot1.style.transform="scale(1)",150);},200);setTimeout(()=>{slot2.textContent=weightedSpin();slot2.style.transform="scale(1.2)";setTimeout(()=>slot2.style.transform="scale(1)",150);},400);setTimeout(()=>{slot3.textContent=weightedSpin();slot3.style.transform="scale(1.2)";setTimeout(()=>slot3.style.transform="scale(1)",150);setTimeout(()=>{let resultMessage;let winMultiplier=1;if(slot1.textContent==="🌟"||slot2.textContent==="🌟"||slot3.textContent==="🌟"){winMultiplier=Math.floor(Math.random()*3)+2;resultMessage=`🌟 BONUS ROUND! 🌟 You win ${winMultiplier}x! 🎉`;}if(Math.random()<0.30){let forceSymbol=symbols[Math.floor(Math.random()*(symbols.length-1))];slot1.textContent=forceSymbol;slot2.textContent=forceSymbol;slot3.textContent=forceSymbol;}if(slot1.textContent==="7️⃣"&&slot2.textContent==="7️⃣"&&slot3.textContent==="7️⃣"){resultMessage=`🎰 7️⃣ 7️⃣ 7️⃣ BIG JACKPOT! 🎉💰 ${winMultiplier}x!!`;}else if(slot1.textContent===slot2.textContent&&slot2.textContent===slot3.textContent){resultMessage=`🎉 JACKPOT! 🎉 ${winMultiplier}x!!`;}else{resultMessage=`❌ Try Again! ❌`;}message.textContent=resultMessage;setTimeout(()=>{lever.style.display="block";},1000);},500);},600);}},150);}}createSlotMachine();})()
+javascript:(function() {
+    let money = 500;
+    let totalSpent = 0;
+    let symbols = ["🍒", "🍋", "🍊", "🍉", "⭐", "🔔", "💎", "7️⃣"];
+
+    function weightedSpin() {
+        let rand = Math.random() * 100;
+        if (rand < 10) return "7️⃣";  
+        if (rand < 40) return symbols[Math.floor(Math.random() * symbols.length)];
+        if (rand < 70) return symbols[Math.floor(Math.random() * symbols.length)];
+        return symbols[Math.floor(Math.random() * symbols.length)];
+    }
+
+    function createSlotMachine() {
+        let existingMachine = document.getElementById("slotMachine");
+        if (existingMachine) existingMachine.remove();
+
+        let machine = document.createElement("div");
+        machine.id = "slotMachine";
+        machine.style = "position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);background:#222;color:white;font-size:40px;padding:30px;border-radius:15px;text-align:center;z-index:10000;font-family:Arial,sans-serif;box-shadow:0px 10px 25px rgba(0,0,0,0.7);border:8px solid gold;width:400px;";
+
+        let title = document.createElement("div");
+        title.textContent = "🎰 SLOT MACHINE 🎰";
+        title.style = "font-size:25px;color:gold;margin-bottom:10px;";
+
+        let moneyDisplay = document.createElement("div");
+        moneyDisplay.style = "font-size:18px;color:lightgreen;margin-bottom:10px;";
+        moneyDisplay.textContent = `💰 Money: $${money}`;
+
+        let reels = document.createElement("div");
+        reels.style = "display:flex;justify-content:center;gap:15px;margin-bottom:20px;";
+
+        let slot1 = document.createElement("span");
+        let slot2 = document.createElement("span");
+        let slot3 = document.createElement("span");
+
+        [slot1, slot2, slot3].forEach(slot => {
+            slot.style = "background:black;padding:20px 25px;border-radius:8px;border:4px solid gold;font-size:50px;transition:0.3s ease-in-out;";
+            slot.textContent = "❓";
+            reels.appendChild(slot);
+        });
+
+        let message = document.createElement("div");
+        message.style = "margin:15px 0;";
+        message.textContent = "Pull the Lever...";
+
+        let lever = document.createElement("div");
+        lever.textContent = "🎯 PULL LEVER ($10) 🎯";
+        lever.style = "background:red;color:white;padding:10px;font-size:20px;border-radius:10px;cursor:pointer;margin-bottom:10px;";
+        lever.onclick = spinSlots;
+
+        let multiSpinButton = document.createElement("div");
+        multiSpinButton.textContent = "🎯 MULTI-SPIN 🎯";
+        multiSpinButton.style = "background:blue;color:white;padding:10px;font-size:20px;border-radius:10px;cursor:pointer;margin-bottom:10px;";
+        multiSpinButton.onclick = startMultiSpin;
+
+        machine.append(title, moneyDisplay, reels, message, lever, multiSpinButton);
+        document.body.appendChild(machine);
+
+        function spinSlots(callback) {
+            if (money < 10) return;
+
+            money -= 10;
+            totalSpent += 10;
+            moneyDisplay.textContent = `💰 Money: $${money}`;
+            message.textContent = "Spinning...";
+
+            let finalSlots = [weightedSpin(), weightedSpin(), weightedSpin()];
+            let spins = 10;
+            let interval = setInterval(() => {
+                slot1.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                slot2.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                slot3.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                spins--;
+                if (spins <= 0) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        slot1.textContent = finalSlots[0];
+                        slot2.textContent = finalSlots[1];
+                        slot3.textContent = finalSlots[2];
+
+                        let spinResult = `${finalSlots[0]}, ${finalSlots[1]}, ${finalSlots[2]}`;
+                        let moneyGained = 0;
+
+                        if (finalSlots[0] === finalSlots[1] && finalSlots[1] === finalSlots[2]) {
+                            if (finalSlots[0] === "7️⃣") {
+                                money += 500;
+                                moneyGained = 500;
+                            } else {
+                                money += 50;
+                                moneyGained = 50;
+                            }
+                        }
+
+                        moneyDisplay.textContent = `💰 Money: $${money}`;
+
+                        if (callback) callback(spinResult, moneyGained);
+                    }, 300);
+                }
+            }, 150);
+        }
+
+        function startMultiSpin() {
+            let spinsCount = parseInt(prompt("How many spins? (Max: As much as money allows)"), 10);
+            if (isNaN(spinsCount) || spinsCount <= 0) return;
+
+            let maxSpins = Math.floor(money / 10);
+            if (spinsCount > maxSpins) spinsCount = maxSpins;
+            if (spinsCount === 0) {
+                alert("Not enough money!");
+                return;
+            }
+
+            totalSpent += spinsCount * 10;
+            money -= spinsCount * 10;
+            moneyDisplay.textContent = `💰 Money: $${money}`;
+            message.textContent = `Performing ${spinsCount} Spins...`;
+
+            let spinResults = [];
+            let currentSpin = 0;
+
+            function doNextSpin() {
+                if (currentSpin >= spinsCount) {
+                    setTimeout(() => {
+                        let totalWinnings = spinResults.reduce((sum, spin) => sum + spin.moneyGained, 0);
+                        let resultMessage = spinResults.map((spin, idx) => `Spin ${idx + 1}: ${spin.result} (Won: $${spin.moneyGained})`).join("\n");
+
+                        let finalMessage = `Final Results:\n\n${resultMessage}\n\nTotal Money Spent: $${totalSpent}\nTotal Money Won: $${totalWinnings}`;
+
+                        if (money <= 0 && totalWinnings === 0) {
+                            finalMessage += `\n\n💀 You lost everything! Better luck next time! 💀`;
+                        }
+
+                        alert(finalMessage);
+                    }, 500);
+                    return;
+                }
+
+                setTimeout(() => {
+                    spinSlots((result, moneyGained) => {
+                        spinResults.push({ result, moneyGained });
+                        currentSpin++;
+                        doNextSpin();
+                    });
+                }, 1000);  // 1-second delay between spins for better pacing
+            }
+
+            doNextSpin();
+        }
+    }
+
+    createSlotMachine();
+})();
