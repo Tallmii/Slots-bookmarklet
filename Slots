@@ -1,0 +1,164 @@
+javascript:(function(){
+    let symbols = ["🍒", "🍋", "🍊", "🍉", "⭐", "🔔", "💎", "7️⃣", "🌟"];
+
+    function weightedSpin() {
+        let rand = Math.random() * 100;
+        if (rand < 2) return "7️⃣"; // 2% chance for 777
+        if (rand < 5) return "🌟"; // 3% chance for bonus symbol 🌟
+        return symbols[Math.floor(Math.random() * (symbols.length - 1))]; // Other symbols
+    }
+
+    function createSlotMachine() {
+        let existingMachine = document.getElementById("slotMachine");
+        if (existingMachine) existingMachine.remove();
+
+        let machine = document.createElement("div");
+        machine.id = "slotMachine";
+        machine.style.position = "fixed";
+        machine.style.top = "50%";
+        machine.style.left = "50%";
+        machine.style.transform = "translate(-50%, -50%)";
+        machine.style.background = "#222";
+        machine.style.color = "white";
+        machine.style.fontSize = "40px";
+        machine.style.padding = "30px";
+        machine.style.borderRadius = "15px";
+        machine.style.textAlign = "center";
+        machine.style.zIndex = "10000";
+        machine.style.fontFamily = "Arial, sans-serif";
+        machine.style.boxShadow = "0px 10px 25px rgba(0,0,0,0.7)";
+        machine.style.border = "8px solid gold";
+        machine.style.width = "350px";
+
+        let title = document.createElement("div");
+        title.textContent = "🎰 SLOT MACHINE 🎰";
+        title.style.fontSize = "25px";
+        title.style.color = "gold";
+        title.style.marginBottom = "10px";
+
+        let reels = document.createElement("div");
+        reels.style.display = "flex";
+        reels.style.justifyContent = "center";
+        reels.style.gap = "15px";
+        reels.style.marginBottom = "20px";
+
+        let slot1 = document.createElement("span");
+        let slot2 = document.createElement("span");
+        let slot3 = document.createElement("span");
+
+        [slot1, slot2, slot3].forEach(slot => {
+            slot.style.background = "black";
+            slot.style.padding = "20px 25px";
+            slot.style.borderRadius = "8px";
+            slot.style.border = "4px solid gold";
+            slot.style.fontSize = "50px";
+            slot.style.transition = "0.3s ease-in-out";
+            slot.textContent = "❓";
+            reels.appendChild(slot);
+        });
+
+        let message = document.createElement("div");
+        message.style.margin = "15px 0";
+        message.textContent = "Pull the Lever...";
+
+        let lever = document.createElement("div");
+        lever.textContent = "🎯 PULL LEVER 🎯";
+        lever.style.background = "red";
+        lever.style.color = "white";
+        lever.style.padding = "10px";
+        lever.style.fontSize = "20px";
+        lever.style.borderRadius = "10px";
+        lever.style.cursor = "pointer";
+        lever.style.marginBottom = "10px";
+        lever.onclick = spinSlots;
+
+        let button = document.createElement("button");
+        button.textContent = "🎰 Try Again 🎰";
+        button.style.background = "gold";
+        button.style.color = "black";
+        button.style.border = "none";
+        button.style.padding = "10px 20px";
+        button.style.fontSize = "18px";
+        button.style.borderRadius = "5px";
+        button.style.cursor = "pointer";
+        button.style.fontWeight = "bold";
+        button.style.display = "none";
+        button.onclick = spinSlots;
+
+        machine.appendChild(title);
+        machine.appendChild(reels);
+        machine.appendChild(message);
+        machine.appendChild(lever);
+        machine.appendChild(button);
+        document.body.appendChild(machine);
+
+        function spinSlots() {
+            message.textContent = "Spinning...";
+            lever.style.display = "none";
+            button.style.display = "none";
+            let spins = 10;
+            let interval = setInterval(() => {
+                slot1.textContent = weightedSpin();
+                slot2.textContent = weightedSpin();
+                slot3.textContent = weightedSpin();
+                spins--;
+                if (spins <= 0) {
+                    clearInterval(interval);
+
+                    setTimeout(() => {
+                        slot1.textContent = weightedSpin();
+                        slot1.style.transform = "scale(1.2)";
+                        setTimeout(() => slot1.style.transform = "scale(1)", 150);
+                    }, 200);
+
+                    setTimeout(() => {
+                        slot2.textContent = weightedSpin();
+                        slot2.style.transform = "scale(1.2)";
+                        setTimeout(() => slot2.style.transform = "scale(1)", 150);
+                    }, 400);
+
+                    setTimeout(() => {
+                        slot3.textContent = weightedSpin();
+                        slot3.style.transform = "scale(1.2)";
+                        setTimeout(() => slot3.style.transform = "scale(1)", 150);
+
+                        setTimeout(() => {
+                            let resultMessage;
+                            let winMultiplier = 1;
+
+                            // Apply win multiplier if there is a bonus symbol 🌟
+                            if (slot1.textContent === "🌟" || slot2.textContent === "🌟" || slot3.textContent === "🌟") {
+                                winMultiplier = Math.floor(Math.random() * 3) + 2; // 2x, 3x, or 5x multiplier
+                                resultMessage = `🌟 BONUS ROUND! 🌟 You win ${winMultiplier}x! 🎉`;
+                            }
+
+                            // 30% chance to force a non-777 match
+                            if (Math.random() < 0.30) {
+                                let forceSymbol = symbols[Math.floor(Math.random() * (symbols.length - 1))];
+                                slot1.textContent = forceSymbol;
+                                slot2.textContent = forceSymbol;
+                                slot3.textContent = forceSymbol;
+                            }
+
+                            if (slot1.textContent === "7️⃣" && slot2.textContent === "7️⃣" && slot3.textContent === "7️⃣") {
+                                resultMessage = `🎰 7️⃣ 7️⃣ 7️⃣ BIG JACKPOT! 🎉💰 ${winMultiplier}x!!`;
+                            } else if (slot1.textContent === slot2.textContent && slot2.textContent === slot3.textContent) {
+                                resultMessage = `🎉 JACKPOT! 🎉 ${winMultiplier}x!!`;
+                            } else {
+                                resultMessage = `❌ Try Again! ❌`;
+                            }
+
+                            message.textContent = resultMessage;
+                            setTimeout(() => {
+                                lever.style.display = "block";
+                                button.style.display = "block"; // Only one button now
+                            }, 1000);
+                        }, 500);
+                    }, 600);
+                }
+            }, 150);
+        }
+    }
+
+    createSlotMachine();
+})();
